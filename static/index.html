@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dead Smart</title>
+    </head>
+    <body>
+        <form id="lock-control-form" onkeydown="return event.key != 'Enter';">
+            <label for="passcode">Passcode: </label>
+            <input id="passcode" name="passcode" type="password" pattern="[0-9]*" inputmode="numeric" maxlength=4>
+            <button name="lock_action" type="submit" value="unlock">Unlock</button>
+	    <button name="lock_action" type="submit" value="lock">Lock</button>
+        </form>
+	<script src="/form_handler.js"></script>
+    </body>
+</html>
