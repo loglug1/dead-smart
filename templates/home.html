@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<div class="mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">
+    <div class="mdc-touch-target-wrapper mdc-layout-grid__cell">
+      <button class="mdc-button mdc-button--raised" onclick="sendUnlockCommand()">
+        <span class="material-symbols-outlined">
+          lock_open
+        </span>
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__touch"></span>
+        <span class="mdc-button__label">Unlock</span>
+      </button>
+    </div>
+    <div class="mdc-touch-target-wrapper mdc-layout-grid__cell">
+      <button class="mdc-button mdc-button--raised" onclick="sendLockCommand()">
+        <span class="material-symbols-outlined">
+          lock
+        </span>
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__touch"></span>
+        <span class="mdc-button__label">Lock</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='home.js') }}"></script>
+{% endblock %}

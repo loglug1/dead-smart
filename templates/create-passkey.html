@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<div class="mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">
+    <div class="mdc-touch-target-wrapper mdc-layout-grid__cell">
+      <button id="create-passkey-button" style="display: block;" class="mdc-button mdc-button--raised" onclick="createPasskey()">
+        <span class="material-symbols-outlined">
+          fingerprint
+        </span>
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__touch"></span>
+        <span class="mdc-button__label">Create Passkey</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='passkey.js') }}"></script>
+{% endblock %}
