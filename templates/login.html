@@ -1,25 +1,32 @@
 {% extends 'index.html' %}
 
 {% block body %}
-<form id="login-form" action="/login" method="POST">
-    <div class="mdc-layout-grid">
-        <div class="mdc-layout-grid__inner">
-                <label class="mdc-text-field mdc-text-field--filled mdc-layout-grid__cell" id="passcode">
-                    <span class="mdc-text-field__ripple"></span>
-                    <span class="mdc-floating-label" id="my-label-id">Passcode</span>
-                    <input class="mdc-text-field__input" aria-labelledby="my-label-id" name="passcode" type="password" pattern="[0-9]*" inputmode="numeric" maxlength=4>
-                    <span class="mdc-line-ripple"></span>
-                </label>
-                <div class="mdc-touch-target-wrapper mdc-layout-grid__cell--align-center mdc-layout-grid__cell--align-right">
-                    <button class="mdc-button mdc-button--raised" onclick="sendLockCommand()">
-                        <span class="mdc-button__ripple"></span>
-                        <span class="mdc-button__touch"></span>
-                        <span class="mdc-button__label">Login</span>
-                    </button>
-                </div>
+
+<div class="mdc-layout-grid">
+    <form id="login-form" action="/login" method="POST" class="mdc-layout-grid__inner">
+        <label class="mdc-text-field mdc-text-field--filled mdc-layout-grid__cell mdc-layout-grid__cell--span-4" id="passcode">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label" id="my-label-id">Passcode</span>
+            <input class="mdc-text-field__input" aria-labelledby="my-label-id" name="passcode" type="password" pattern="[0-9]*" inputmode="numeric" maxlength=4>
+            <span class="mdc-line-ripple"></span>
+        </label>
+        <div class="mdc-touch-target-wrapper mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+            <button class="mdc-button mdc-button--raised">
+                <span class="mdc-button__ripple"></span>
+                <span class="mdc-button__touch"></span>
+                <span class="mdc-button__label">Login</span>
+            </button>
         </div>
+    </form>
+</div>
+<div class="fab-container">
+    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-center mdc-layout-grid__cell--align-center mdc-layout-grid__cell--span-12">
+        <button class="mdc-fab mdc-fab--extended" aria-label="Favorite" onclick="passkeyLogin()">
+            <div class="mdc-fab__ripple"></div>
+            <span class="material-symbols-outlined">fingerprint</span>
+            <span class="mdc-fab__label">Biometrics</span>
+        </button>
     </div>
-</form>
-<script type="text/javascript">const authOptions = {{ auth_options | safe }}; </script>
+</div>
 <script type="text/javascript" src="{{ url_for('static',filename='login.js') }}"></script>
 {% endblock %}
