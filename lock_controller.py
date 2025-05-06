@@ -1,6 +1,7 @@
 from gpiozero import AngularServo, LED, Button
 from time import sleep
 from gpiozero.pins.pigpio import PiGPIOFactory
+import threading
 
 class LockController:
     def __init__(self, init_state):
@@ -22,9 +23,9 @@ class LockController:
         self.update_led()
 
         # Initialize Buttons
-        self.greenButton = Button(17, pin_factory=factory)
-        self.redButton = Button(22, pin_factory=factory)
-        self.whiteButton = Button(27, pin_factory=factory)
+        self.greenButton = Button(17, bounce_time=0.1, pin_factory=factory)
+        self.redButton = Button(22, bounce_time=0.1, pin_factory=factory)
+        self.whiteButton = Button(27, bounce_time=0.1, pin_factory=factory)
         self.greenButton.when_pressed = self.unlock
         self.redButton.when_pressed = self.lock
         self.whiteButton.when_pressed = self.temporary_unlock
@@ -38,6 +39,9 @@ class LockController:
             return
         else:
             self.busy = True
+        threading.Thread(target=self._lock_worker).start()
+
+    def _lock_worker(self):
         self.servo.angle = 90
         sleep(1)
         self.servo.angle = 0
@@ -50,6 +54,9 @@ class LockController:
             return
         else:
             self.busy = True
+        threading.Thread(target=self._unlock_worker).start()
+
+    def _unlock_worker(self):
         self.servo.angle = -110
         sleep(1)
         self.servo.angle = 0

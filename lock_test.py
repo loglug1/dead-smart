@@ -10,4 +10,3 @@ while(True):
 
     # lc.unlock()
     print("Running!")
-    sleep(5)
