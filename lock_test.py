@@ -3,8 +3,11 @@ from time import sleep
 
 lc = LockController(True)
 
-lc.lock()
+while(True):
+    # lc.lock()
 
-sleep(5)
+    # sleep(5)
 
-lc.unlock()
+    # lc.unlock()
+    print("Running!")
+    sleep(5)

@@ -1,7 +1,7 @@
 try:
-    from lock_controller import LockController
-except ImportError:
-    print("GPIO Library Missing, using simulated lock controller")
+    from lock_controlleri import LockController
+except ImportError as e:
+    print("GPIO Library Missing, using simulated lock controller: ", e)
     from fake_lock_controller import LockController
 from database_controller import DatabaseController
 from flask import Flask, render_template, request, session, redirect, url_for
@@ -160,4 +160,4 @@ def test():
     return urlparse(request.base_url).hostname
 
 if __name__ == '__main__':
-    app.run(host="ds.tri-quad.net", ssl_context=('cert2.pem', 'privkey2.pem'))
+    app.run(host="0.0.0.0")#, ssl_context=('cert2.pem', 'privkey2.pem'))
