@@ -6,8 +6,26 @@ document.addEventListener('DOMContentLoaded', function () {
     window.buttons = [].map.call(document.querySelectorAll('.mdc-button'), function(el) {
       return new mdc.ripple.MDCRipple(el);
     });
+    window.fabRipple = new mdc.ripple.MDCRipple(document.querySelector('.mdc-fab'));
 
-    passkeyLogin()
+    // Availability of `window.PublicKeyCredential` means WebAuthn is usable.  
+    // `isUserVerifyingPlatformAuthenticatorAvailable` means the feature detection is usable.  
+    // `isConditionalMediationAvailable` means the feature detection is usable.  
+    if (window.PublicKeyCredential &&  
+      PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable &&  
+      PublicKeyCredential.isConditionalMediationAvailable) {  
+    // Check if user verifying platform authenticator is available.  
+    Promise.all([  
+      PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable(),  
+      PublicKeyCredential.isConditionalMediationAvailable(),  
+    ]).then(results => {  
+      if (results.every(r => r === true)) {  
+          document.getElementById("passkey-login-button").style.display = "block"
+      } else {
+          showSnackbox("Passkey support unavailable.");
+      }
+    });  
+    }
 });
 
 function serializeCredential(cred) {
@@ -31,8 +49,33 @@ function arrayBufferToBase64url(buffer) {
         .replace(/=+$/, '');
 }
 
+async function getAuthOptions() {
+  try {
+    const response = await fetch('/login/auth_options', {
+      method: 'get',
+      credentials: 'same-origin'
+    });
+
+    if (response.ok) {
+      showSnackbar("Loading passkeys...");
+      const data = await response.json();
+      return data;
+    } else if (response.status === 404) {
+      showSnackbar('No available credentials on server.');
+      return {};
+    } else {
+      showSnackbar('Error fetching available credentials from server.');
+      return {};
+    }
+  } catch (error) {
+    showSnackbar('Error fetching credentials: ' + error);
+    return {};
+  }
+}
+
 async function passkeyLogin() {
-    const options = PublicKeyCredential.parseRequestOptionsFromJSON(authOptions)
+    const authOptions = await getAuthOptions();
+    const options = PublicKeyCredential.parseRequestOptionsFromJSON(authOptions);
     window.temp = options;
     let credential = await navigator.credentials.get({
     publicKey: options

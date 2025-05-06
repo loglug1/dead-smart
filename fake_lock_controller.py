@@ -3,6 +3,7 @@ from time import sleep
 class LockController:
     def __init__(self, init_state):
         self.locked = init_state
+        print("Initialized Buttons")
 
     def get_lock_state(self):
         return self.locked

@@ -8,6 +8,14 @@ main {
 a {
     color: #ffffff;
 }
+.fab-container {
+    position: fixed;
+    bottom: 64px; /* Adjust as needed */
+    right: 16px;  /* Or center it with left/right */
+    z-index: 100; /* Ensure it’s above other elements */
+    left: 50%;
+    transform: translateX(-50%);
+}
 :root {
     --mdc-theme-primary: #26bde2;
     --mdc-theme-secondary: #000000;

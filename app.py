@@ -4,7 +4,7 @@ except ImportError:
     print("GPIO Library Missing, using simulated lock controller")
     from fake_lock_controller import LockController
 from database_controller import DatabaseController
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, make_response
 import webauthn
 from webauthn.helpers.structs import PublicKeyCredentialDescriptor, UserVerificationRequirement
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
@@ -53,21 +53,36 @@ def login():
 
     return render_template("login.html", title="Login", auth_options=webauthn.options_to_json(auth_options))
 
+@app.route("/login/auth_options")
+def login_credential_ids():
+    # Generate data to use passkey
+    url = urlparse(request.base_url).hostname
+    credentials = db_controller.get_credential_data()
+
+    if credentials == None:
+        return render_template("login.html", title="Login", auth_options=None)
+    
+    allowed_credentials = []
+    for credential_id in credentials:
+        allowed_credentials.append(PublicKeyCredentialDescriptor(id=credential_id[0]))
+    auth_options = webauthn.generate_authentication_options(rp_id=url, allow_credentials=allowed_credentials, user_verification=UserVerificationRequirement.REQUIRED)
+    session['challenge'] = auth_options.challenge
+    return webauthn.options_to_json(auth_options)
+
 @app.route("/auth/passcode", methods=["POST"])
 def auth_passcode():
     if 'passcode' in request.form: #passcode login
         passcode = request.form['passcode']
-        user = db_controller.verify_user(passcode)
-        if user == None:
+        user_id = db_controller.verify_user(passcode)
+        if user_id == None:
             return {'lock_status': 'Invalid Passcode!'}, 403
-        session['user_id'] = user
+        session['user_id'] = user_id
         redirect_url = session.pop('redirect', 'home')
         return {'url': url_for(redirect_url)}
     
 @app.route("/auth/passkey", methods=["POST"])
 def auth_passkey():
     url = urlparse(request.base_url).hostname
-    print(json.loads(request.get_data().decode('utf-8'))['id'])
     credential_id = webauthn.base64url_to_bytes(json.loads(request.get_data().decode('utf-8'))['id'])
     credential_auth_data = db_controller.get_credential_auth_data(credential_id)
     if credential_auth_data == None:
@@ -75,10 +90,8 @@ def auth_passkey():
     key = credential_auth_data[0]
     user_id = credential_auth_data[1]
     sign_count = credential_auth_data[2]
-    print(request.get_data().decode('utf-8'))
     try:
         auth_verification = webauthn.verify_authentication_response(credential=request.get_data().decode('utf-8'), expected_challenge=session.pop('challenge', None) , expected_rp_id=url, expected_origin=trusted_origins, credential_public_key=key, credential_current_sign_count=0)
-        print(auth_verification)
         db_controller.update_credential_sign_count(credential_id, sign_count + 1)
         redirect_url = session.pop('redirect', 'home')
         session['user_id'] = user_id

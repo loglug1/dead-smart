@@ -4,7 +4,7 @@
         <title>Dead Smart - {{title}}</title>
         <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
         <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=close,fingerprint,lock,lock_open,logout" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=close,fingerprint,home,lock,lock_open,logout,manage_accounts" />
         <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
@@ -14,15 +14,25 @@
           <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
             <h1 class="mdc-top-app-bar__title">{{ title }}</h1>
           </section>
-          {% if title != 'Login' %}
           <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-            <a href="{{ url_for('logout') }}">
+            {% if title != 'Login' %}
+            <a href="{{ url_for('home') }}" class="material-icons mdc-top-app-bar__action-item mdc-icon-button">
+              <span class="material-symbols-outlined">
+                home
+              </span>
+            </a>
+            <a href="{{ url_for('create_passkey') }}" class="material-icons mdc-top-app-bar__action-item mdc-icon-button">
+              <span class="material-symbols-outlined">
+                manage_accounts
+              </span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="material-icons mdc-top-app-bar__action-item mdc-icon-button">
               <span class="material-symbols-outlined">
               logout
               </span>
             </a>
+            {% endif %}
           </section>
-          {% endif %}
         </div>
       </header>
       <main class="mdc-top-app-bar--fixed-adjust">
