@@ -76,7 +76,9 @@ async function getAuthOptions() {
 async function passkeyLogin() {
     const authOptions = await getAuthOptions();
     const options = PublicKeyCredential.parseRequestOptionsFromJSON(authOptions);
-    window.temp = options;
+    if (options === {}) {
+	return;
+    }
     let credential = await navigator.credentials.get({
     publicKey: options
     });

@@ -60,7 +60,7 @@ def login_credential_ids():
     credentials = db_controller.get_credential_data()
 
     if credentials == None:
-        return render_template("login.html", title="Login", auth_options=None)
+        return {}, 404
     
     allowed_credentials = []
     for credential_id in credentials:
