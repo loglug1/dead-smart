@@ -32,7 +32,14 @@ db_controller = DatabaseController("dead_smart.db")
 def home():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return render_template("home.html", title="Lock Controls")
+    return render_template("home.html", title="Lock Controls", name=db_controller.get_user_data(session['user_id'])[1])
+
+@app.route("/account")
+def account():
+    if 'user_id' not in session:
+        session['redirect'] = 'account'
+        return redirect(url_for('login'))
+    return render_template("account.html", title="Account", username=db_controller.get_user_data(session['user_id'])[0])
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -79,6 +86,14 @@ def auth_passcode():
         session['user_id'] = user_id
         redirect_url = session.pop('redirect', 'home')
         return {'url': url_for(redirect_url)}
+
+@app.route("/auth/set/passcode", methods=["POST"])
+def auth_set_passcode():
+    if 'user_id' not in session:
+        return {'error': 'invalid_session'}, 403
+    new_passcode = request.form['new-passcode']
+    db_controller.set_passcode(session['user_id'], new_passcode)
+    return {'passcode_status': 'success'}, 200
     
 @app.route("/auth/passkey", methods=["POST"])
 def auth_passkey():
@@ -98,6 +113,13 @@ def auth_passkey():
         return {'url': url_for(redirect_url)}
     except InvalidAuthenticationResponse as e:
         return {'auth_status': str(e)}, 403
+
+@app.route("/auth/test", methods=["GET"])
+def auth_test():
+    if 'user_id' in session:
+        return 200
+    else:
+        return 403
 
 @app.route("/lock")
 def lock():
@@ -160,13 +182,6 @@ def register_passkey():
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
-
-@app.route("/create-passkey")
-def create_passkey():
-    if 'user_id' not in session:
-        session['redirect'] = 'create_passkey'
-        return redirect(url_for('login'))
-    return render_template("create-passkey.html", title="Create a Passkey")
 
 @app.route("/test")
 def test():

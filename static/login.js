@@ -1,12 +1,10 @@
 // Initialize Material Design Components
 document.addEventListener('DOMContentLoaded', function () {
-    window.passcodeField = new mdc.textField.MDCTextField(document.getElementById('passcode'));
-    window.snackbar = new mdc.snackbar.MDCSnackbar(document.getElementById('snackbar'));
-    window.snackbarMessage = document.getElementById('snackbar_text');
+    window.passcodeField = new mdc.textField.MDCTextField(document.getElementById('passcode')); // Passcode Form Field
     window.buttons = [].map.call(document.querySelectorAll('.mdc-button'), function(el) {
       return new mdc.ripple.MDCRipple(el);
     });
-    window.fabRipple = new mdc.ripple.MDCRipple(document.querySelector('.mdc-fab'));
+    window.fabRipple = new mdc.ripple.MDCRipple(document.querySelector('.mdc-fab')); // Biometrics Button
 
     // Availability of `window.PublicKeyCredential` means WebAuthn is usable.  
     // `isUserVerifyingPlatformAuthenticatorAvailable` means the feature detection is usable.  
@@ -76,7 +74,7 @@ async function getAuthOptions() {
 async function passkeyLogin() {
     const authOptions = await getAuthOptions();
     const options = PublicKeyCredential.parseRequestOptionsFromJSON(authOptions);
-    if (options === {}) {
+    if (options == {}) {
 	return;
     }
     let credential = await navigator.credentials.get({
@@ -105,11 +103,6 @@ async function passkeyLogin() {
       });
 }
 
-function showSnackbar(message) {
-    snackbarMessage.innerHTML = message;
-    snackbar.open();
-}
-
 function processLoginForm(e) {
     if (e.preventDefault) e.preventDefault();
 
@@ -118,7 +111,7 @@ function processLoginForm(e) {
     var formData = new FormData(form);
     formData.append(e.submitter.name, e.submitter.value);
 
-    console.log(formData.getAll('lock_action'));
+    // console.log(formData.getAll('lock_action'));
 
     fetch('/auth/passcode', {
       method: 'POST',

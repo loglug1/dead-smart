@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<h1 class="mdc-top-app-bar__title">Logged in as: {{ username }}</h1>
+<div class="mdc-layout-grid">
+  <form id="change-passcode-form" action="/account" method="POST" class="mdc-layout-grid__inner">
+    <label class="mdc-text-field mdc-text-field--filled mdc-layout-grid__cell mdc-layout-grid__cell--span-4" id="new-passcode">
+        <span class="mdc-text-field__ripple"></span>
+        <span class="mdc-floating-label" id="my-label-id">New Passcode</span>
+        <input class="mdc-text-field__input" aria-labelledby="my-label-id" name="new-passcode" type="password" pattern="[0-9]*" inputmode="numeric" maxlength=4>
+        <span class="mdc-line-ripple"></span>
+    </label>
+    <div class="mdc-touch-target-wrapper mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+        <button class="mdc-button mdc-button--raised">
+            <span class="mdc-button__ripple"></span>
+            <span class="mdc-button__touch"></span>
+            <span class="mdc-button__label">Change Passcode</span>
+        </button>
+    </div>
+    <div class="mdc-touch-target-wrapper mdc-layout-grid__cell">
+      <button id="create-passkey-button" style="display: block;" class="mdc-button mdc-button--raised" onclick="createPasskey()">
+        <span class="material-symbols-outlined">
+          fingerprint
+        </span>
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__touch"></span>
+        <span class="mdc-button__label">Create Passkey</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='passkey.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='change-passcode.js') }}"></script>
+{% endblock %}

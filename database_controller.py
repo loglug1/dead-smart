@@ -77,3 +77,12 @@ class DatabaseController:
             if len(credentials) == 0:
                 return None
             return credentials[0]
+    
+    def set_passcode(self, user_id, new_passcode):
+        with sqlite3.connect(self.dbFile) as conn:
+            cur = conn.cursor()
+            res = cur.execute('''UPDATE users SET passcode = ? WHERE id = ?''',(new_passcode, user_id,))
+            users = res.fetchall()
+            if len(users) == 0:
+                return None
+            return users[0]
